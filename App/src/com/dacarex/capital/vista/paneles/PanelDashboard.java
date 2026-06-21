@@ -1,18 +1,23 @@
 package com.dacarex.capital.vista.paneles;
 
+import com.dacarex.capital.enums.PeriodoRango;
 import com.dacarex.capital.service.InformeService;
 import com.dacarex.capital.service.MovimientoService;
-import com.dacarex.capital.util.TemaManager;
-import com.dacarex.capital.vista.componentes.PanelGraficoBarras;
-import com.dacarex.capital.vista.componentes.PanelGraficoLineas;
-import com.dacarex.capital.vista.componentes.PanelGraficoTarta;
+import com.dacarex.capital.util.Formato;
 import com.dacarex.capital.vista.componentes.TarjetaKPI;
-import javax.swing.Scrollable;
 
-import javax.swing.*;
-import java.awt.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.chart.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.*;
 
-public class PanelDashboard extends JPanel {
+import java.time.LocalDate;
+import java.util.Map;
+
+public class PanelDashboard extends ScrollPane {
 
     private final MovimientoService movimientoService = new MovimientoService();
     private final InformeService informeService = new InformeService();
@@ -22,145 +27,134 @@ public class PanelDashboard extends JPanel {
     private TarjetaKPI tarjetaGastos;
     private TarjetaKPI tarjetaCategoria;
 
-    private PanelGraficoLineas graficoLineas;
-    private PanelGraficoTarta graficoTarta;
-    private PanelGraficoBarras graficoBarras;
+    private LineChart<String, Number> graficoLineas;
+    private PieChart graficoTarta;
+    private BarChart<String, Number> graficoBarras;
 
-    private JLabel lblSaludo;
-    private JPanel contenedor;
+    private ComboBox<PeriodoRango> cmbPeriodo;
 
     public PanelDashboard() {
-        inicializarComponentes();
-        recargar();
+        setFitToWidth(true);
+        setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        setContent(construirContenido());
     }
 
-    private void inicializarComponentes() {
-        setLayout(new BorderLayout());
-        setOpaque(false);
-        setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
-
-        contenedor = new PanelDesplazable();
-        contenedor.setOpaque(false);
-        contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
+    private VBox construirContenido() {
+        VBox raiz = new VBox(20);
+        raiz.setPadding(new Insets(25, 30, 25, 30));
 
         // ── CABECERA ──
-        lblSaludo = new JLabel("Dashboard");
-        lblSaludo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblSaludo.setForeground(TemaManager.textoTitulo());
-        lblSaludo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        contenedor.add(lblSaludo);
+        Label lblTitulo = new Label("Dashboard");
+        lblTitulo.getStyleClass().add("titulo-pagina");
 
-        JLabel lblSub = new JLabel("Resumen general de tus finanzas");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblSub.setForeground(TemaManager.textoSecundario());
-        lblSub.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblSub.setBorder(BorderFactory.createEmptyBorder(2, 0, 20, 0));
-        contenedor.add(lblSub);
+        Label lblSub = new Label("Resumen general de tus finanzas");
+        lblSub.getStyleClass().add("subtitulo-pagina");
+
+        VBox textos = new VBox(2, lblTitulo, lblSub);
+
+        cmbPeriodo = new ComboBox<>();
+        cmbPeriodo.getItems().addAll(PeriodoRango.values());
+        cmbPeriodo.setValue(PeriodoRango.SEIS_MESES);
+        cmbPeriodo.setOnAction(e -> recargar());
+
+        Label lblPeriodo = new Label("Periodo:");
+        HBox cajaPeriodo = new HBox(8, lblPeriodo, cmbPeriodo);
+        cajaPeriodo.setAlignment(Pos.CENTER_RIGHT);
+
+        BorderPane cabecera = new BorderPane();
+        cabecera.setLeft(textos);
+        cabecera.setRight(cajaPeriodo);
+        BorderPane.setAlignment(cajaPeriodo, Pos.CENTER_RIGHT);
 
         // ── TARJETAS KPI ──
-        JPanel filaTarjetas = new JPanel(new GridLayout(1, 4, 18, 0));
-        filaTarjetas.setOpaque(false);
-        filaTarjetas.setAlignmentX(Component.LEFT_ALIGNMENT);
-        filaTarjetas.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+        tarjetaSaldo     = new TarjetaKPI("💰", "Saldo actual", "0,00 €");
+        tarjetaIngresos  = new TarjetaKPI("📈", "Ingresos totales", "0,00 €");
+        tarjetaGastos    = new TarjetaKPI("📉", "Gastos totales", "0,00 €");
+        tarjetaCategoria = new TarjetaKPI("🏷️", "Categoria mas activa", "-");
 
-        tarjetaSaldo     = new TarjetaKPI("Saldo actual", "0.00 EUR", TemaManager.acento(), "💰");
-        tarjetaIngresos  = new TarjetaKPI("Ingresos totales", "0.00 EUR", TemaManager.exito(), "📈");
-        tarjetaGastos    = new TarjetaKPI("Gastos totales", "0.00 EUR", TemaManager.peligro(), "📉");
-        tarjetaCategoria = new TarjetaKPI("Categoria mas activa", "-", TemaManager.info(), "🏷️");
+        HBox filaTarjetas = new HBox(18, tarjetaSaldo, tarjetaIngresos, tarjetaGastos, tarjetaCategoria);
+        for (var tarjeta : filaTarjetas.getChildren()) {
+            HBox.setHgrow(tarjeta, Priority.ALWAYS);
+        }
 
-        filaTarjetas.add(tarjetaSaldo);
-        filaTarjetas.add(tarjetaIngresos);
-        filaTarjetas.add(tarjetaGastos);
-        filaTarjetas.add(tarjetaCategoria);
+        // ── GRAFICO DE LINEAS ──
+        Label lblEvolucion = new Label("Evolucion del saldo acumulado");
+        lblEvolucion.getStyleClass().add("titulo-seccion");
 
-        contenedor.add(filaTarjetas);
-        contenedor.add(Box.createVerticalStrut(20));
-
-        // ── GRAFICO DE LINEAS (ancho completo) ──
-        JLabel lblEvolucion = crearTituloSeccion("Evolucion del saldo acumulado");
-        contenedor.add(lblEvolucion);
-
-        graficoLineas = new PanelGraficoLineas();
-        graficoLineas.setAlignmentX(Component.LEFT_ALIGNMENT);
-        graficoLineas.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
-        contenedor.add(graficoLineas);
-        contenedor.add(Box.createVerticalStrut(20));
+        graficoLineas = new LineChart<>(new CategoryAxis(), new NumberAxis());
+        graficoLineas.setLegendVisible(false);
+        graficoLineas.setPrefHeight(260);
+        graficoLineas.getStyleClass().add("chart-card");
+        graficoLineas.setAnimated(false);
 
         // ── FILA INFERIOR: TARTA + BARRAS ──
-        JPanel filaGraficos = new JPanel(new GridLayout(1, 2, 18, 0));
-        filaGraficos.setOpaque(false);
-        filaGraficos.setAlignmentX(Component.LEFT_ALIGNMENT);
-        filaGraficos.setMaximumSize(new Dimension(Integer.MAX_VALUE, 280));
+        Label lblGastos = new Label("Gastos por categoria");
+        lblGastos.getStyleClass().add("titulo-seccion");
+        graficoTarta = new PieChart();
+        graficoTarta.setPrefHeight(280);
+        graficoTarta.getStyleClass().add("chart-card");
+        graficoTarta.setAnimated(false);
+        VBox colTarta = new VBox(8, lblGastos, graficoTarta);
+        HBox.setHgrow(colTarta, Priority.ALWAYS);
 
-        JPanel colIzq = new JPanel(new BorderLayout());
-        colIzq.setOpaque(false);
-        colIzq.add(crearTituloSeccion("Gastos por categoria"), BorderLayout.NORTH);
-        graficoTarta = new PanelGraficoTarta();
-        colIzq.add(graficoTarta, BorderLayout.CENTER);
+        Label lblBarras = new Label("Ingresos vs Gastos");
+        lblBarras.getStyleClass().add("titulo-seccion");
+        graficoBarras = new BarChart<>(new CategoryAxis(), new NumberAxis());
+        graficoBarras.setPrefHeight(280);
+        graficoBarras.getStyleClass().add("chart-card");
+        graficoBarras.setAnimated(false);
+        VBox colBarras = new VBox(8, lblBarras, graficoBarras);
+        HBox.setHgrow(colBarras, Priority.ALWAYS);
 
-        JPanel colDer = new JPanel(new BorderLayout());
-        colDer.setOpaque(false);
-        colDer.add(crearTituloSeccion("Ingresos vs Gastos (6 meses)"), BorderLayout.NORTH);
-        graficoBarras = new PanelGraficoBarras();
-        colDer.add(graficoBarras, BorderLayout.CENTER);
+        HBox filaGraficos = new HBox(18, colTarta, colBarras);
 
-        filaGraficos.add(colIzq);
-        filaGraficos.add(colDer);
-
-        contenedor.add(filaGraficos);
-
-        JScrollPane scroll = new JScrollPane(contenedor);
-        scroll.setBorder(null);
-        scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false);
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        add(scroll, BorderLayout.CENTER);
-    }
-
-    private JLabel crearTituloSeccion(String texto) {
-        JLabel lbl = new JLabel(texto);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lbl.setForeground(TemaManager.textoTitulo());
-        lbl.setBorder(BorderFactory.createEmptyBorder(0, 0, 8, 0));
-        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return lbl;
+        raiz.getChildren().addAll(cabecera, filaTarjetas, lblEvolucion, graficoLineas, filaGraficos);
+        return raiz;
     }
 
     public void recargar() {
+        PeriodoRango periodo = cmbPeriodo.getValue();
+        LocalDate desde = periodo.fechaInicio();
+
         double saldo    = movimientoService.calcularSaldo();
         double ingresos = movimientoService.calcularTotalIngresos();
         double gastos   = movimientoService.calcularTotalGastos();
         String catTop   = informeService.categoriaMasActiva();
 
-        tarjetaSaldo.actualizar(String.format("%.2f EUR", saldo),
-                saldo >= 0 ? TemaManager.exito() : TemaManager.peligro());
-        tarjetaIngresos.actualizar(String.format("%.2f EUR", ingresos), TemaManager.exito());
-        tarjetaGastos.actualizar(String.format("%.2f EUR", gastos), TemaManager.peligro());
-        tarjetaCategoria.actualizar(catTop, TemaManager.info());
+        tarjetaSaldo.actualizar(Formato.moneda(saldo), saldo >= 0 ? "#28c76f" : "#f05252");
+        tarjetaIngresos.actualizar(Formato.moneda(ingresos), "#28c76f");
+        tarjetaGastos.actualizar(Formato.moneda(gastos), "#f05252");
+        tarjetaCategoria.actualizar(catTop, "#17a2b8");
 
-        graficoLineas.setPuntos(informeService.evolucionSaldoAcumulado());
-        graficoTarta.setDatos(informeService.gastosPorCategoria());
-        graficoBarras.setDatos(informeService.evolucionMensual(6));
-    }
+        // Linea: saldo acumulado
+        Map<String, Double> evolucionSaldo = informeService.evolucionSaldoPorFecha(desde);
+        XYChart.Series<String, Number> serieSaldo = new XYChart.Series<>();
+        evolucionSaldo.forEach((fecha, valor) ->
+            serieSaldo.getData().add(new XYChart.Data<>(fecha, valor)));
+        graficoLineas.getData().clear();
+        graficoLineas.getData().add(serieSaldo);
 
-    public void aplicarTema() {
-        lblSaludo.setForeground(TemaManager.textoTitulo());
-        recargar();
-        repaint();
-    }
-    
-    
-    private static class PanelDesplazable extends JPanel implements Scrollable {
-        @Override
-        public Dimension getPreferredScrollableViewportSize() { return getPreferredSize(); }
-        @Override
-        public int getScrollableUnitIncrement(Rectangle r, int orient, int dir) { return 16; }
-        @Override
-        public int getScrollableBlockIncrement(Rectangle r, int orient, int dir) { return 100; }
-        @Override
-        public boolean getScrollableTracksViewportWidth() { return true; }
-        @Override
-        public boolean getScrollableTracksViewportHeight() { return false; }
+        // Tarta: gastos por categoria
+        Map<String, Double> gastosCat = informeService.gastosPorCategoria(desde);
+        graficoTarta.getData().clear();
+        gastosCat.forEach((nombre, importe) ->
+            graficoTarta.getData().add(
+                new PieChart.Data(nombre + " (" + Formato.moneda(importe) + ")", importe)));
+
+        // Barras: ingresos vs gastos agrupado segun granularidad del periodo
+        Map<String, double[]> agrupado = informeService.evolucionAgrupada(periodo);
+
+        XYChart.Series<String, Number> serieIngresos = new XYChart.Series<>();
+        serieIngresos.setName("Ingresos");
+        XYChart.Series<String, Number> serieGastos = new XYChart.Series<>();
+        serieGastos.setName("Gastos");
+
+        agrupado.forEach((clave, valores) -> {
+            serieIngresos.getData().add(new XYChart.Data<>(clave, valores[0]));
+            serieGastos.getData().add(new XYChart.Data<>(clave, valores[1]));
+        });
+
+        graficoBarras.getData().clear();
+        graficoBarras.getData().addAll(serieIngresos, serieGastos);
     }
 }

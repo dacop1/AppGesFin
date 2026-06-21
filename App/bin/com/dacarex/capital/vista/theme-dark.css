@@ -1,0 +1,210 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #12121c;
+}
+
+.login-fondo {
+    -fx-background-color: linear-gradient(to bottom right, #0c0c18, #23284a);
+}
+
+.login-card {
+    -fx-background-color: rgba(30,30,45,0.97);
+    -fx-background-radius: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 30, 0.2, 0, 10);
+}
+
+.login-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e6e6f5;
+}
+
+.login-subtitulo {
+    -fx-font-size: 12px;
+    -fx-text-fill: #82829f;
+}
+
+.login-campo-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9a9ab5;
+}
+
+.login-campo {
+    -fx-background-color: #1e1e2d;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #37375a;
+    -fx-padding: 10 12 10 12;
+    -fx-font-size: 13px;
+}
+
+.login-campo:focused {
+    -fx-border-color: #5e7cff;
+}
+
+.login-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 11px;
+}
+
+.login-link {
+    -fx-text-fill: #8aa0ff;
+    -fx-font-size: 12px;
+}
+
+.btn {
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 10 16 10 16;
+}
+
+.btn-primario { -fx-background-color: #5e7cff; }
+.btn-primario:hover { -fx-background-color: #788eff; }
+
+.btn-exito { -fx-background-color: #28c76f; }
+.btn-exito:hover { -fx-background-color: #3ddb83; }
+
+.btn-peligro { -fx-background-color: #f05252; }
+.btn-peligro:hover { -fx-background-color: #ff6b6b; }
+
+.btn-aviso { -fx-background-color: #ff9f43; }
+.btn-aviso:hover { -fx-background-color: #ffb066; }
+
+.sidebar {
+    -fx-background-color: #0d0d16;
+}
+
+.sidebar-logo {
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sidebar-usuario {
+    -fx-font-size: 12px;
+    -fx-text-fill: #82829f;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d6d6ea;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.nav-button:hover {
+    -fx-background-color: #20202f;
+}
+
+.nav-button-activo {
+    -fx-background-color: #5e7cff;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 10 16 10 16;
+    -fx-background-radius: 8;
+}
+
+.sidebar-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #82829f;
+    -fx-font-size: 12px;
+    -fx-alignment: center-left;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.sidebar-link:hover {
+    -fx-text-fill: white;
+}
+
+.kpi-card {
+    -fx-background-color: #1e1e2d;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #303048;
+    -fx-padding: 18;
+}
+
+.kpi-titulo {
+    -fx-font-size: 13px;
+    -fx-text-fill: #9a9ab5;
+}
+
+.kpi-valor {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.titulo-seccion {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e6e6f5;
+}
+
+.titulo-pagina {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e6e6f5;
+}
+
+.subtitulo-pagina {
+    -fx-font-size: 13px;
+    -fx-text-fill: #82829f;
+}
+
+.chart-card {
+    -fx-background-color: #1e1e2d;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #303048;
+    -fx-padding: 14;
+}
+
+.table-view {
+    -fx-background-color: #1e1e2d;
+    -fx-border-color: #303048;
+    -fx-control-inner-background: #1e1e2d;
+    -fx-text-fill: #d6d6ea;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #0d0d16;
+}
+
+.table-view .column-header-background .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: #1e1e2d;
+    -fx-text-fill: #d6d6ea;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #5e7cff;
+}
+
+.combo-box, .text-field, .date-picker {
+    -fx-background-color: #1e1e2d;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #37375a;
+}
+
+.dialogo {
+    -fx-background-color: #1e1e2d;
+}
+
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}

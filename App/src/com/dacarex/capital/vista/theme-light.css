@@ -1,0 +1,201 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6fa;
+}
+
+.login-fondo {
+    -fx-background-color: linear-gradient(to bottom right, #1c1c32, #3c4682);
+}
+
+.login-card {
+    -fx-background-color: rgba(255,255,255,0.97);
+    -fx-background-radius: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 30, 0.2, 0, 10);
+}
+
+.login-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #19192e;
+}
+
+.login-subtitulo {
+    -fx-font-size: 12px;
+    -fx-text-fill: #82829a;
+}
+
+.login-campo-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64647a;
+}
+
+.login-campo {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dcdee6;
+    -fx-padding: 10 12 10 12;
+    -fx-font-size: 13px;
+}
+
+.login-campo:focused {
+    -fx-border-color: #5e7cff;
+}
+
+.login-error {
+    -fx-text-fill: #f05252;
+    -fx-font-size: 11px;
+}
+
+.login-link {
+    -fx-text-fill: #5e7cff;
+    -fx-font-size: 12px;
+}
+
+.btn {
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 10 16 10 16;
+}
+
+.btn-primario { -fx-background-color: #5e7cff; }
+.btn-primario:hover { -fx-background-color: #4d6aef; }
+
+.btn-exito { -fx-background-color: #28c76f; }
+.btn-exito:hover { -fx-background-color: #20a85c; }
+
+.btn-peligro { -fx-background-color: #f05252; }
+.btn-peligro:hover { -fx-background-color: #d83f3f; }
+
+.btn-aviso { -fx-background-color: #ff9f43; }
+.btn-aviso:hover { -fx-background-color: #ee8c2e; }
+
+.sidebar {
+    -fx-background-color: #1c1c2d;
+}
+
+.sidebar-logo {
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sidebar-usuario {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9696af;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.nav-button:hover {
+    -fx-background-color: #2d2d41;
+}
+
+.nav-button-activo {
+    -fx-background-color: #5e7cff;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 10 16 10 16;
+    -fx-background-radius: 8;
+}
+
+.sidebar-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #bebed2;
+    -fx-font-size: 12px;
+    -fx-alignment: center-left;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.sidebar-link:hover {
+    -fx-text-fill: white;
+}
+
+.kpi-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #e1e3eb;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
+}
+
+.kpi-titulo {
+    -fx-font-size: 13px;
+    -fx-text-fill: #82829a;
+}
+
+.kpi-valor {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.titulo-seccion {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #19192e;
+}
+
+.titulo-pagina {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #19192e;
+}
+
+.subtitulo-pagina {
+    -fx-font-size: 13px;
+    -fx-text-fill: #82829a;
+}
+
+.chart-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #e1e3eb;
+    -fx-padding: 14;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #e1e3eb;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #1c1c2d;
+}
+
+.table-view .column-header-background .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #5e7cff;
+}
+
+.combo-box, .text-field, .date-picker {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dcdee6;
+}
+
+.dialogo {
+    -fx-background-color: white;
+}
+
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
