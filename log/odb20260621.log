@@ -1,0 +1,43 @@
+------------------------------------------------------------------------------------------------------------------------
+
+[2026-06-21 13:43:46 #1 store] 
+Database 'C:\Users\copet\Desktop\AppGesFin\db\dacarex.odb' is opened by 12596@DESKTOP-7D9SCD5
+
+[2026-06-21 13:43:46 #2 store] 
+Configuration path: ?
+
+[2026-06-21 13:43:46 #3 type] 
+Type com.dacarex.capital.modelo.EntidadBase is not enhanced.
+
+[2026-06-21 13:43:46 #4 type] 
+Type com.dacarex.capital.modelo.Categoria is not enhanced.
+
+[2026-06-21 13:43:46 #5 type] 
+Type com.dacarex.capital.modelo.Usuario is not enhanced.
+
+[2026-06-21 13:44:07 #6 store] 
+Database 'C:\Users\copet\Desktop\AppGesFin\db\dacarex.odb' is closed by 12596@DESKTOP-7D9SCD5
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2026-06-21 13:55:20 #1 store] 
+Database 'C:\Users\copet\Desktop\AppGesFin\db\dacarex.odb' is opened by 8096@DESKTOP-7D9SCD5
+
+[2026-06-21 13:55:20 #2 store] 
+Configuration path: ?
+
+[2026-06-21 13:55:20 #3 type] 
+Type com.dacarex.capital.modelo.EntidadBase is not enhanced.
+
+[2026-06-21 13:55:20 #4 type] 
+Type com.dacarex.capital.modelo.Categoria is not enhanced.
+
+[2026-06-21 13:55:20 #5 type] 
+Type com.dacarex.capital.modelo.Usuario is not enhanced.
+
+[2026-06-21 13:55:42 #6 type] 
+Type com.dacarex.capital.modelo.Movimiento is not enhanced.
+
+[2026-06-21 14:04:33 #7 store] 
+Database 'C:\Users\copet\Desktop\AppGesFin\db\dacarex.odb' is closed by 8096@DESKTOP-7D9SCD5
+
