@@ -4,6 +4,7 @@ import com.dacarex.capital.enums.PeriodoRango;
 import com.dacarex.capital.service.InformeService;
 import com.dacarex.capital.service.MovimientoService;
 import com.dacarex.capital.util.Formato;
+import com.dacarex.capital.vista.componentes.IconoFX;
 import com.dacarex.capital.vista.componentes.TarjetaKPI;
 
 import javafx.geometry.Insets;
@@ -13,6 +14,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -43,7 +45,6 @@ public class PanelDashboard extends ScrollPane {
         VBox raiz = new VBox(20);
         raiz.setPadding(new Insets(25, 30, 25, 30));
 
-        // ── CABECERA ──
         Label lblTitulo = new Label("Dashboard");
         lblTitulo.getStyleClass().add("titulo-pagina");
 
@@ -55,9 +56,11 @@ public class PanelDashboard extends ScrollPane {
         cmbPeriodo = new ComboBox<>();
         cmbPeriodo.getItems().addAll(PeriodoRango.values());
         cmbPeriodo.setValue(PeriodoRango.SEIS_MESES);
+        cmbPeriodo.setPrefWidth(190);
         cmbPeriodo.setOnAction(e -> recargar());
 
         Label lblPeriodo = new Label("Periodo:");
+        lblPeriodo.getStyleClass().add("subtitulo-pagina");
         HBox cajaPeriodo = new HBox(8, lblPeriodo, cmbPeriodo);
         cajaPeriodo.setAlignment(Pos.CENTER_RIGHT);
 
@@ -66,18 +69,24 @@ public class PanelDashboard extends ScrollPane {
         cabecera.setRight(cajaPeriodo);
         BorderPane.setAlignment(cajaPeriodo, Pos.CENTER_RIGHT);
 
-        // ── TARJETAS KPI ──
-        tarjetaSaldo     = new TarjetaKPI("💰", "Saldo actual", "0,00 €");
-        tarjetaIngresos  = new TarjetaKPI("📈", "Ingresos totales", "0,00 €");
-        tarjetaGastos    = new TarjetaKPI("📉", "Gastos totales", "0,00 €");
-        tarjetaCategoria = new TarjetaKPI("🏷️", "Categoria mas activa", "-");
+        tarjetaSaldo = new TarjetaKPI(
+            IconoFX.crear(IconoFX.Tipo.BILLETERA, Color.web("#5e7cff"), 22),
+            "Saldo actual", "0,00 €");
+        tarjetaIngresos = new TarjetaKPI(
+            IconoFX.crear(IconoFX.Tipo.TENDENCIA_SUBE, Color.web("#28c76f"), 22),
+            "Ingresos totales", "0,00 €");
+        tarjetaGastos = new TarjetaKPI(
+            IconoFX.crear(IconoFX.Tipo.TENDENCIA_BAJA, Color.web("#f05252"), 22),
+            "Gastos totales", "0,00 €");
+        tarjetaCategoria = new TarjetaKPI(
+            IconoFX.crear(IconoFX.Tipo.ETIQUETA, Color.web("#17a2b8"), 22),
+            "Categoria mas activa", "-");
 
         HBox filaTarjetas = new HBox(18, tarjetaSaldo, tarjetaIngresos, tarjetaGastos, tarjetaCategoria);
         for (var tarjeta : filaTarjetas.getChildren()) {
             HBox.setHgrow(tarjeta, Priority.ALWAYS);
         }
 
-        // ── GRAFICO DE LINEAS ──
         Label lblEvolucion = new Label("Evolucion del saldo acumulado");
         lblEvolucion.getStyleClass().add("titulo-seccion");
 
@@ -87,7 +96,6 @@ public class PanelDashboard extends ScrollPane {
         graficoLineas.getStyleClass().add("chart-card");
         graficoLineas.setAnimated(false);
 
-        // ── FILA INFERIOR: TARTA + BARRAS ──
         Label lblGastos = new Label("Gastos por categoria");
         lblGastos.getStyleClass().add("titulo-seccion");
         graficoTarta = new PieChart();
@@ -126,7 +134,6 @@ public class PanelDashboard extends ScrollPane {
         tarjetaGastos.actualizar(Formato.moneda(gastos), "#f05252");
         tarjetaCategoria.actualizar(catTop, "#17a2b8");
 
-        // Linea: saldo acumulado
         Map<String, Double> evolucionSaldo = informeService.evolucionSaldoPorFecha(desde);
         XYChart.Series<String, Number> serieSaldo = new XYChart.Series<>();
         evolucionSaldo.forEach((fecha, valor) ->
@@ -134,14 +141,12 @@ public class PanelDashboard extends ScrollPane {
         graficoLineas.getData().clear();
         graficoLineas.getData().add(serieSaldo);
 
-        // Tarta: gastos por categoria
         Map<String, Double> gastosCat = informeService.gastosPorCategoria(desde);
         graficoTarta.getData().clear();
         gastosCat.forEach((nombre, importe) ->
             graficoTarta.getData().add(
                 new PieChart.Data(nombre + " (" + Formato.moneda(importe) + ")", importe)));
 
-        // Barras: ingresos vs gastos agrupado segun granularidad del periodo
         Map<String, double[]> agrupado = informeService.evolucionAgrupada(periodo);
 
         XYChart.Series<String, Number> serieIngresos = new XYChart.Series<>();

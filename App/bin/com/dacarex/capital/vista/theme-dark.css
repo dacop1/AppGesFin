@@ -3,6 +3,10 @@
     -fx-background-color: #12121c;
 }
 
+.label {
+    -fx-text-fill: #c4c4dc;
+}
+
 .login-fondo {
     -fx-background-color: linear-gradient(to bottom right, #0c0c18, #23284a);
 }
@@ -74,6 +78,16 @@
 .btn-aviso { -fx-background-color: #ff9f43; }
 .btn-aviso:hover { -fx-background-color: #ffb066; }
 
+.accion-icono {
+    -fx-background-color: transparent;
+    -fx-padding: 4 6 4 6;
+    -fx-cursor: hand;
+    -fx-background-radius: 6;
+}
+.accion-icono:hover {
+    -fx-background-color: rgba(94,124,255,0.18);
+}
+
 .sidebar {
     -fx-background-color: #0d0d16;
 }
@@ -97,6 +111,7 @@
     -fx-padding: 10 16 10 16;
     -fx-cursor: hand;
     -fx-background-radius: 8;
+    -fx-graphic-text-gap: 12;
 }
 
 .nav-button:hover {
@@ -110,6 +125,7 @@
     -fx-alignment: center-left;
     -fx-padding: 10 16 10 16;
     -fx-background-radius: 8;
+    -fx-graphic-text-gap: 12;
 }
 
 .sidebar-link {
@@ -119,6 +135,7 @@
     -fx-alignment: center-left;
     -fx-padding: 8 16 8 16;
     -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
 }
 
 .sidebar-link:hover {
@@ -168,11 +185,15 @@
     -fx-padding: 14;
 }
 
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
 .table-view {
     -fx-background-color: #1e1e2d;
     -fx-border-color: #303048;
     -fx-control-inner-background: #1e1e2d;
-    -fx-text-fill: #d6d6ea;
+    -fx-table-cell-border-color: #2a2a3e;
 }
 
 .table-view .column-header-background {
@@ -184,13 +205,29 @@
     -fx-font-weight: bold;
 }
 
-.table-row-cell {
-    -fx-background-color: #1e1e2d;
+.table-view .table-cell {
     -fx-text-fill: #d6d6ea;
+    -fx-alignment: center-left;
+}
+
+.table-row-cell:filled:odd {
+    -fx-background-color: #232336;
+}
+
+.table-row-cell:filled:even {
+    -fx-background-color: #1e1e2d;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #2a2a44;
 }
 
 .table-row-cell:selected {
     -fx-background-color: #5e7cff;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
 }
 
 .combo-box, .text-field, .date-picker {
@@ -201,10 +238,10 @@
     -fx-border-color: #37375a;
 }
 
-.dialogo {
-    -fx-background-color: #1e1e2d;
+.combo-box .list-cell, .date-picker .text-field {
+    -fx-text-fill: white;
 }
 
-.scroll-pane, .scroll-pane > .viewport {
-    -fx-background-color: transparent;
+.dialogo {
+    -fx-background-color: #1e1e2d;
 }

@@ -3,6 +3,7 @@ package com.dacarex.capital.vista;
 import com.dacarex.capital.modelo.Usuario;
 import com.dacarex.capital.service.AuthService;
 import com.dacarex.capital.util.TemaManager;
+import com.dacarex.capital.vista.componentes.IconoFX;
 import com.dacarex.capital.vista.paneles.PanelCategorias;
 import com.dacarex.capital.vista.paneles.PanelDashboard;
 import com.dacarex.capital.vista.paneles.PanelInformes;
@@ -88,7 +89,6 @@ public class VentanaPrincipal {
         sb.setMinWidth(220);
         sb.setPadding(new Insets(20, 0, 20, 0));
 
-        // ── LOGO ──
         StackPane iconoLogo = crearIconoMoneda(16, 1.8);
         Label lblLogo = new Label("Dacarex");
         lblLogo.getStyleClass().add("sidebar-logo");
@@ -102,25 +102,28 @@ public class VentanaPrincipal {
         lblUsuario.setPadding(new Insets(0, 0, 18, 22));
         sb.getChildren().add(lblUsuario);
 
-        // ── NAVEGACION (justo debajo, sin hueco) ──
-        agregarBotonNav(sb, "dashboard",   "🏠  Dashboard");
-        agregarBotonNav(sb, "movimientos", "💸  Movimientos");
-        agregarBotonNav(sb, "categorias",  "🗂️  Categorias");
-        agregarBotonNav(sb, "informes",    "📊  Informes");
+        agregarBotonNav(sb, "dashboard",   "Dashboard",   IconoFX.Tipo.CASA);
+        agregarBotonNav(sb, "movimientos", "Movimientos", IconoFX.Tipo.BILLETERA);
+        agregarBotonNav(sb, "categorias",  "Categorias",  IconoFX.Tipo.ETIQUETA);
+        agregarBotonNav(sb, "informes",    "Informes",    IconoFX.Tipo.GRAFICO);
 
-        // ── ESPACIADOR (empuja lo siguiente al fondo) ──
         Region espaciador = new Region();
         VBox.setVgrow(espaciador, Priority.ALWAYS);
         sb.getChildren().add(espaciador);
 
-        btnTema = new Button(TemaManager.isModoOscuro() ? "☀  Modo claro" : "🌙  Modo oscuro");
+        btnTema = new Button(TemaManager.isModoOscuro() ? "Modo claro" : "Modo oscuro");
+        btnTema.setGraphic(IconoFX.crear(
+            TemaManager.isModoOscuro() ? IconoFX.Tipo.SOL : IconoFX.Tipo.LUNA,
+            Color.web("#bebed2"), 15));
         btnTema.getStyleClass().add("sidebar-link");
         btnTema.setMaxWidth(Double.MAX_VALUE);
         btnTema.setOnAction(e -> cambiarTema());
         sb.getChildren().add(btnTema);
 
-        Button btnSalir = new Button("⬅  Cerrar sesion");
+        Button btnSalir = new Button("Cerrar sesion");
+        btnSalir.setGraphic(IconoFX.crear(IconoFX.Tipo.SALIR, Color.web("#ff8282"), 15));
         btnSalir.getStyleClass().add("sidebar-link");
+        btnSalir.setStyle("-fx-text-fill: #ff8282;");
         btnSalir.setMaxWidth(Double.MAX_VALUE);
         btnSalir.setOnAction(e -> {
             authService.logout();
@@ -146,8 +149,9 @@ public class VentanaPrincipal {
         return stack;
     }
 
-    private void agregarBotonNav(VBox sb, String clave, String texto) {
+    private void agregarBotonNav(VBox sb, String clave, String texto, IconoFX.Tipo tipoIcono) {
         Button btn = new Button(texto);
+        btn.setGraphic(IconoFX.crear(tipoIcono, Color.WHITE, 16));
         btn.getStyleClass().add("nav-button");
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setOnAction(e -> mostrarPanel(clave));
@@ -185,7 +189,10 @@ public class VentanaPrincipal {
 
     private void cambiarTema() {
         TemaManager.toggle();
-        btnTema.setText(TemaManager.isModoOscuro() ? "☀  Modo claro" : "🌙  Modo oscuro");
+        btnTema.setText(TemaManager.isModoOscuro() ? "Modo claro" : "Modo oscuro");
+        btnTema.setGraphic(IconoFX.crear(
+            TemaManager.isModoOscuro() ? IconoFX.Tipo.SOL : IconoFX.Tipo.LUNA,
+            Color.web("#bebed2"), 15));
         aplicarHojaEstilos();
     }
 

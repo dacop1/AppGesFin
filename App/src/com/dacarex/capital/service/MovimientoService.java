@@ -27,6 +27,36 @@ public class MovimientoService {
         return nuevo;
     }
 
+    public void actualizar(Movimiento movimiento, TipoMovimiento tipo, String descripcion, double importe,
+                           Categoria categoria, LocalDate fecha, String notas) {
+
+        TipoMovimiento tipoAnterior = movimiento.getTipo();
+        String descAnterior = movimiento.getDescripcion();
+        double importeAnterior = movimiento.getImporte();
+        Categoria catAnterior = movimiento.getCategoria();
+        LocalDate fechaAnterior = movimiento.getFecha();
+        String notasAnteriores = movimiento.getNotas();
+
+        movimiento.setTipo(tipo);
+        movimiento.setDescripcion(descripcion);
+        movimiento.setImporte(importe);
+        movimiento.setCategoria(categoria);
+        movimiento.setFecha(fecha);
+        movimiento.setNotas(notas);
+
+        if (!movimiento.esValido()) {
+            movimiento.setTipo(tipoAnterior);
+            movimiento.setDescripcion(descAnterior);
+            movimiento.setImporte(importeAnterior);
+            movimiento.setCategoria(catAnterior);
+            movimiento.setFecha(fechaAnterior);
+            movimiento.setNotas(notasAnteriores);
+            throw new ValidacionException(movimiento.validar());
+        }
+
+        dao.actualizar(movimiento);
+    }
+
     public void eliminar(long id) {
         dao.eliminar(id);
     }
@@ -48,6 +78,24 @@ public class MovimientoService {
 
     public List<Movimiento> filtrarPorRango(LocalDate desde, LocalDate hasta) {
         return dao.buscarPorRangoFechas(desde, hasta);
+    }
+
+    public List<Movimiento> filtrarAvanzado(TipoMovimiento tipo, Categoria categoria,
+                                            LocalDate desde, LocalDate hasta, String texto) {
+        return obtenerTodos().stream()
+                .filter(m -> tipo == null || m.getTipo() == tipo)
+                .filter(m -> categoria == null || (m.getCategoria() != null && m.getCategoria().getId() == categoria.getId()))
+                .filter(m -> desde == null || !m.getFecha().isBefore(desde))
+                .filter(m -> hasta == null || !m.getFecha().isAfter(hasta))
+                .filter(m -> texto == null || texto.isBlank()
+                        || m.getDescripcion().toLowerCase().contains(texto.toLowerCase())
+                        || (m.getNotas() != null && m.getNotas().toLowerCase().contains(texto.toLowerCase())))
+                .collect(Collectors.toList());
+    }
+
+    public boolean categoriaEnUso(long categoriaId) {
+        return obtenerTodos().stream()
+                .anyMatch(m -> m.getCategoria() != null && m.getCategoria().getId() == categoriaId);
     }
 
     public double calcularTotalIngresos() {

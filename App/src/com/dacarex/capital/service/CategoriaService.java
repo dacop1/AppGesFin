@@ -28,6 +28,22 @@ public class CategoriaService {
         return nueva;
     }
 
+    public void actualizar(Categoria categoria, String nombre, TipoMovimiento tipo) {
+        String nombreAnterior = categoria.getNombre();
+        TipoMovimiento tipoAnterior = categoria.getTipo();
+
+        categoria.setNombre(nombre);
+        categoria.setTipo(tipo);
+
+        if (!categoria.esValido()) {
+            categoria.setNombre(nombreAnterior);
+            categoria.setTipo(tipoAnterior);
+            throw new ValidacionException(categoria.validar());
+        }
+
+        dao.actualizar(categoria);
+    }
+
     public void eliminar(long id) {
         dao.eliminar(id);
     }
