@@ -1,0 +1,17 @@
+------------------------------------------------------------------------------------------------------------------------
+
+[2026-06-22 22:34:44 #1 store] 
+Database 'C:\Users\copet\Desktop\AppGesFin\db\dacarex.odb' is opened by 3764@DESKTOP-7D9SCD5
+
+[2026-06-22 22:34:44 #2 store] 
+Configuration path: ?
+
+[2026-06-22 22:34:44 #3 type] 
+Type com.dacarex.capital.modelo.EntidadBase is not enhanced.
+
+[2026-06-22 22:34:44 #4 type] 
+Type com.dacarex.capital.modelo.Categoria is not enhanced.
+
+[2026-06-22 22:34:44 #5 type] 
+Type com.dacarex.capital.modelo.Usuario is not enhanced.
+
