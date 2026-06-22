@@ -162,4 +162,31 @@ public class InformeService {
                 .average()
                 .orElse(0);
     }
+    public Map<String, Map<String, Double>> gastosMensualesPorCategoria(PeriodoRango periodo) {
+        LocalDate desde = periodo.fechaInicio();
+        PeriodoRango.Granularidad gran = periodo.granularidad();
+
+        DateTimeFormatter formato = switch (gran) {
+            case DIA  -> DateTimeFormatter.ofPattern("dd MMM");
+            case MES  -> DateTimeFormatter.ofPattern("MMM yy");
+            case ANIO -> DateTimeFormatter.ofPattern("yyyy");
+        };
+
+        List<Movimiento> movimientos = filtrarDesde(desde).stream()
+                .filter(m -> m.getTipo() == TipoMovimiento.GASTO)
+                .collect(Collectors.toList());
+
+        // Resultado: categoria -> (periodo -> importe)
+        Map<String, Map<String, Double>> resultado = new LinkedHashMap<>();
+
+        for (Movimiento m : movimientos) {
+            if (m.getCategoria() == null) continue;
+            String periodoStr = m.getFecha().format(formato);
+            String cat = m.getCategoria().getNombre();
+            resultado.computeIfAbsent(cat, k -> new LinkedHashMap<>())
+                     .merge(periodoStr, m.getImporte(), Double::sum);
+        }
+
+        return resultado;
+    }
 }

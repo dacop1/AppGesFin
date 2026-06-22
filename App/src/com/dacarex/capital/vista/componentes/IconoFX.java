@@ -13,7 +13,7 @@ public class IconoFX {
     public enum Tipo {
         CASA, BILLETERA, ETIQUETA, GRAFICO, LUNA, SOL, SALIR,
         MONEDA, TENDENCIA_SUBE, TENDENCIA_BAJA, FLECHA_ARRIBA, FLECHA_ABAJO,
-        LAPIZ, PAPELERA, MAS
+        LAPIZ, PAPELERA, MAS, EXPANDIR
     }
 
     public static Node crear(Tipo tipo, Color color, double tamano) {
@@ -33,6 +33,7 @@ public class IconoFX {
             case LAPIZ -> lapiz(color, tamano);
             case PAPELERA -> papelera(color, tamano);
             case MAS -> mas(color, tamano);
+            case EXPANDIR -> expandir(color, tamano);
         };
     }
 
@@ -199,5 +200,29 @@ public class IconoFX {
         h.setStrokeWidth(Math.max(1.6, s * 0.16));
         v.setStrokeWidth(Math.max(1.6, s * 0.16));
         return new Group(h, v);
+    }
+
+    private static Node expandir(Color color, double s) {
+        Group g = new Group();
+        double grosor = Math.max(1.6, s * 0.14);
+        
+        // Esquina superior izquierda
+        Line a = new Line(0, s * 0.4, 0, 0); a.setStroke(color); a.setStrokeWidth(grosor);
+        Line b = new Line(0, 0, s * 0.4, 0); b.setStroke(color); b.setStrokeWidth(grosor);
+        
+        // Esquina inferior derecha
+        Line c = new Line(s, s * 0.6, s, s); c.setStroke(color); c.setStrokeWidth(grosor);
+        Line d = new Line(s, s, s * 0.6, s); d.setStroke(color); d.setStrokeWidth(grosor);
+        
+        // Esquina superior derecha
+        Line e = new Line(s, s * 0.4, s, 0); e.setStroke(color); e.setStrokeWidth(grosor);
+        Line f = new Line(s, 0, s * 0.6, 0); f.setStroke(color); f.setStrokeWidth(grosor);
+        
+        // Esquina inferior izquierda
+        Line h = new Line(0, s * 0.6, 0, s); h.setStroke(color); h.setStrokeWidth(grosor);
+        Line i = new Line(0, s, s * 0.4, s); i.setStroke(color); i.setStrokeWidth(grosor);
+        
+        g.getChildren().addAll(a, b, c, d, e, f, h, i);
+        return g;
     }
 }

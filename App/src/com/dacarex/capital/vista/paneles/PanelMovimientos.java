@@ -22,6 +22,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -112,7 +113,16 @@ public class PanelMovimientos extends BorderPane {
         btnExportar.getStyleClass().addAll("btn", "btn-aviso");
         btnExportar.setOnAction(e -> exportarCSV());
 
-        HBox filaFiltros2 = new HBox(10, fechaDesde, fechaHasta, btnFiltrar, btnLimpiar, btnNuevo, btnExportar);
+        Button btnExportarBackup = new Button("Exportar backup");
+        btnExportarBackup.getStyleClass().addAll("btn", "btn-info");
+        btnExportarBackup.setOnAction(e -> exportarBackup());
+        
+        Button btnImportarBackup = new Button("Importar backup");
+        btnImportarBackup.getStyleClass().addAll("btn", "btn-secundario");
+        btnImportarBackup.setOnAction(e -> importarBackup());
+
+        HBox filaFiltros2 = new HBox(10, fechaDesde, fechaHasta, btnFiltrar, btnLimpiar, 
+                                     btnNuevo, btnExportar, btnExportarBackup, btnImportarBackup);
         filaFiltros2.setAlignment(Pos.CENTER_LEFT);
         filaFiltros2.setPadding(new Insets(8, 0, 12, 0));
 
@@ -380,5 +390,58 @@ public class PanelMovimientos extends BorderPane {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION, mensaje, ButtonType.OK);
         alerta.getDialogPane().getStylesheets().add(TemaManager.getHojaEstilos());
         alerta.showAndWait();
+    }
+
+    private void exportarBackup() {
+        javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
+        fc.setTitle("Guardar backup completo");
+        fc.setInitialFileName("dacarex_backup_" + LocalDate.now() + ".dacarex");
+        fc.getExtensionFilters().add(
+            new javafx.stage.FileChooser.ExtensionFilter("Backup Dacarex (*.dacarex)", "*.dacarex"));
+        Stage ventana = (Stage) getScene().getWindow();
+        java.io.File fichero = fc.showSaveDialog(ventana);
+        if (fichero != null) {
+            try {
+                com.dacarex.capital.service.BackupService backup =
+                    new com.dacarex.capital.service.BackupService();
+                backup.exportar(fichero.getAbsolutePath());
+                mostrarAviso("Backup exportado correctamente en:\n" + fichero.getAbsolutePath()
+                    + "\n\nPuedes usar este fichero para restaurar todos tus datos\nen otra cuenta o instalacion.");
+            } catch (java.io.IOException ex) {
+                mostrarAviso("Error al exportar backup:\n" + ex.getMessage());
+            }
+        }
+    }
+
+    private void importarBackup() {
+        javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
+        fc.setTitle("Importar backup Dacarex");
+        fc.getExtensionFilters().add(
+            new javafx.stage.FileChooser.ExtensionFilter("Backup Dacarex (*.dacarex)", "*.dacarex"));
+        Stage ventana = (Stage) getScene().getWindow();
+        java.io.File fichero = fc.showOpenDialog(ventana);
+        if (fichero != null) {
+            Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION,
+                "Importar datos del backup:\n\n" + fichero.getName() +
+                "\n\nSe añadiran todos los movimientos y categorias del fichero.\n" +
+                "Los datos actuales NO se eliminaran, se combinaran.",
+                ButtonType.YES, ButtonType.NO);
+            confirmacion.setTitle("Confirmar importacion");
+            confirmacion.getDialogPane().getStylesheets().add(TemaManager.getHojaEstilos());
+            confirmacion.showAndWait().ifPresent(respuesta -> {
+                if (respuesta == ButtonType.YES) {
+                    try {
+                        com.dacarex.capital.service.BackupService backup =
+                            new com.dacarex.capital.service.BackupService();
+                        com.dacarex.capital.service.BackupService.ResultadoImportacion resultado =
+                            backup.importar(fichero.getAbsolutePath());
+                        mostrarAviso(resultado.resumen());
+                        recargar();
+                    } catch (java.io.IOException ex) {
+                        mostrarAviso("Error al importar backup:\n" + ex.getMessage());
+                    }
+                }
+            });
+        }
     }
 }
